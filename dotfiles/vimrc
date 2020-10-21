@@ -1,0 +1,285 @@
+" plugins {{{
+call plug#begin('~/.vim/plugged')
+
+" utils
+Plug 'tmux-plugins/vim-tmux-focus-events'
+Plug 'roxma/vim-tmux-clipboard'
+
+" navigate
+Plug 'preservim/nerdtree', { 'on': 'NERDTreeToggle' }
+Plug 'christoomey/vim-tmux-navigator'
+Plug 'simeji/winresizer'
+Plug 'Yggdroot/LeaderF', { 'do': './install.sh' }
+Plug 'qpkorr/vim-bufkill'
+Plug 'mileszs/ack.vim'
+Plug 'schickling/vim-bufonly'
+Plug 't9md/vim-choosewin'
+
+" edit
+Plug 'SirVer/ultisnips'
+Plug 'honza/vim-snippets'
+Plug 'tpope/vim-surround'
+Plug 'tomtom/tcomment_vim'
+Plug 'jiangmiao/auto-pairs'
+Plug 'mg979/vim-visual-multi'
+Plug 'ycm-core/YouCompleteMe', { 'do': './install.py --clang-completer' }
+Plug 'ludovicchabant/vim-gutentags'
+Plug 'dense-analysis/ale'
+Plug 'Shougo/echodoc.vim'
+
+" appearence
+Plug 'mhinz/vim-signify'
+Plug 'vim-airline/vim-airline'
+Plug 'NLKNguyen/papercolor-theme'
+Plug 'octol/vim-cpp-enhanced-highlight'
+
+call plug#end()
+" }}}
+
+" builtin settings {{{
+
+" edit
+set encoding=utf-8
+set fileencoding=utf-8
+set nobackup
+set noswapfile
+set backspace=indent,eol,start
+set cino+=(0
+" set mouse=a
+
+" indent
+set nosmartindent
+set autoindent
+set tabstop=2
+set softtabstop=2
+set shiftwidth=2
+set expandtab
+
+" appearence
+silent! colorscheme PaperColor
+set bg=dark
+set nowrap
+set nu
+set rnu
+set foldenable
+set foldmethod=marker
+set cursorline
+set shortmess=a
+set wildmenu
+set showcmd
+set noshowmode
+
+" search
+set incsearch
+set magic
+set ignorecase
+set smartcase
+set hlsearch
+
+" filetype specific
+autocmd FileType make setlocal noexpandtab
+autocmd FileType cuda setlocal filetype=cpp
+autocmd BufNewFile,BufRead .pdbrc set filetype=python
+autocmd FileType python setlocal softtabstop=2 tabstop=2 shiftwidth=2
+
+" tags
+set tags=./.tags;,.tags
+
+" load directory specific .vimrc
+set exrc
+set secure
+set noautochdir
+
+" }}}
+
+" key mapping {{{
+let mapleader=","
+set timeoutlen=1000 ttimeoutlen=0
+set pastetoggle=<leader>v
+inoremap jk <ESC>:w<CR>
+nnoremap B ^
+nnoremap E $
+nnoremap <leader>w :let @/ = '\<'.expand('<cword>').'\>'\|set hlsearch<C-M>
+nnoremap <leader>gw :let @/ = expand('<cword>')\|set hlsearch<C-M>
+nnoremap <leader><space> :noh<CR>
+nnoremap <space> za
+
+" " navigate windows
+" nnoremap <silent> <c-k> :wincmd k<CR>
+" nnoremap <silent> <c-j> :wincmd j<CR>
+" nnoremap <silent> <c-h> :wincmd h<CR>
+" nnoremap <silent> <c-l> :wincmd l<CR>
+
+" navigate buffers
+nnoremap <Tab> :bn<CR>
+nnoremap <S-Tab> :bp<CR>
+nmap <leader>1 :b1<CR>
+nmap <leader>2 :b2<CR>
+nmap <leader>3 :b3<CR>
+nmap <leader>4 :b4<CR>
+nmap <leader>5 :b5<CR>
+nmap <leader>6 :b6<CR>
+nmap <leader>7 :b7<CR>
+nmap <leader>8 :b8<CR>
+nmap <leader>9 :b9<CR>
+nmap <leader>0 :b10<CR>
+
+" }}}
+
+" plugin settings {{{
+
+" ack
+if executable('ag')
+  let g:ackprg = 'ag --vimgrep'
+endif
+nnoremap <leader>a :Ack! -Q -i<space>
+
+" LeaderF
+let g:Lf_ShortcutF = '<c-p>'
+let g:Lf_ShortcutB = '<m-n>'
+noremap <c-n> :LeaderfMru<cr>
+noremap <m-p> :LeaderfFunction!<cr>
+noremap <m-n> :LeaderfBuffer<cr>
+noremap <m-m> :LeaderfTag<cr>
+
+let g:Lf_StlSeparator = { 'left': '', 'right': '', 'font': '' }
+let g:Lf_ShowDevIcons = 0
+let g:Lf_UseVersionControlTool = 0
+let g:Lf_JumpToExistingWindow = 0
+let g:Lf_RootMarkers = ['.project', '.root', '.svn', '.git']
+let g:Lf_WorkingDirectoryMode = 'Ac'
+let g:Lf_WindowHeight = 0.30
+let g:Lf_CacheDirectory = expand('~/.vim/cache')
+let g:Lf_ShowRelativePath = 0
+let g:Lf_HideHelp = 1
+let g:Lf_StlColorscheme = 'powerline'
+let g:Lf_PreviewResult = {'Function':0, 'BufTag':0}
+
+
+" NERDTree
+nnoremap <F3> :NERDTreeToggle<CR>
+autocmd BufEnter * if bufname('#') =~# "^NERD_tree_" && winnr('$') > 1 | b# | endif
+let NERDTreeIgnore = ['\v\.(pyc|o|so|jpg|png|bmp)$']
+let NERDTreeShowLineNumbers = 1
+
+" UltiSnips
+let g:UltiSnipsExpandTrigger = "<C-C>"
+let g:UltiSnipsJumpForwardTrigger = "<C-J>"
+let g:UltiSnipsJumpBackwardTrigger = "<C-K>"
+let g:UltiSnipsSnippetsDir = "~/.vim/UltiSnips"
+let g:snips_author = "guoqiang"
+
+" winresizer
+let g:winresizer_start_key = '<C-X>'
+let g:winresizer_vert_resize = 5
+let g:winresizer_horiz_resize = 3
+
+" airline
+let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#buffer_nr_show = 1
+let g:airline#extensions#tabline#formatter = 'unique_tail_improved'
+
+" Vsual Multi-cursor
+let g:VM_maps = {}
+let g:VM_maps["Add Cursor Down"] = '<S-Down>'
+let g:VM_maps["Add Cursor Up"] = '<S-Up>'
+
+" YCM
+set completeopt-=preview
+nnoremap <leader>j :YcmCompleter GoToDefinition<CR>
+let g:ycm_add_preview_to_completeopt = 0
+let g:ycm_show_diagnostics_ui = 0
+let g:ycm_min_num_of_chars_for_completion = 2
+let g:ycm_autoclose_preview_window_after_completion = 1
+let g:ycm_filepath_completion_use_working_dir = 1
+let g:ycm_collect_identifiers_from_comments_and_strings = 1
+let g:ycm_complete_in_strings=1
+let g:ycm_auto_hover = ''
+let g:ycm_global_ycm_extra_conf = '~/.ycm_extra_conf.py'
+let g:ycm_confirm_extra_conf = 0
+
+" vim-bufkill
+nnoremap <leader>d :BD<CR>
+
+" vim-bufonly
+nnoremap <leader>o :BOnly<CR>
+
+" choosewin
+nmap - <Plug>(choosewin)
+let g:choosewin_overlay_enable = 1
+let g:choosewin_blink_on_land = 0
+
+" vim-tmux-navigator
+let g:tmux_navigator_no_mappings = 1
+
+nnoremap <silent> <c-h> :TmuxNavigateLeft<cr>
+nnoremap <silent> <c-j> :TmuxNavigateDown<cr>
+nnoremap <silent> <c-k> :TmuxNavigateUp<cr>
+nnoremap <silent> <c-l> :TmuxNavigateRight<cr>
+" nnoremap <silent> {Previous-Mapping} :TmuxNavigatePrevious<cr>
+
+" ALE
+let g:ale_linters_explicit = 1
+let g:ale_completion_delay = 500
+let g:ale_echo_delay = 20
+let g:ale_lint_delay = 500
+let g:ale_echo_msg_format = '[%linter%] %code: %%s'
+let g:ale_lint_on_text_changed = 'normal'
+let g:ale_lint_on_insert_leave = 1
+let g:airline#extensions#ale#enabled = 1
+let g:ale_c_gcc_options = '-Wall -O2 -std=c99'
+let g:ale_cpp_gcc_options = '-Wall -O2 -std=c++14'
+let g:ale_c_cppcheck_options = ''
+let g:ale_cpp_cppcheck_options = ''
+
+let g:ale_sign_error = "\ue009\ue009"
+hi! clear SpellBad
+hi! clear SpellCap
+hi! clear SpellRare
+hi! SpellBad gui=undercurl guisp=red
+hi! SpellCap gui=undercurl guisp=blue
+hi! SpellRare gui=undercurl guisp=magenta
+
+" }}}
+
+" other {{{
+
+" Protect large files from sourcing and other overhead.
+" Files become read only
+if !exists("my_auto_commands_loaded")
+  let my_auto_commands_loaded = 1
+  " Large files are > 10M
+  " Set options:
+  " eventignore+=FileType (no syntax highlighting etc
+  " assumes FileType always on)
+  " noswapfile (save copy of file)
+  " bufhidden=unload (save memory when other file is viewed)
+  " buftype=nowrite (file is read-only)
+  " undolevels=-1 (no undo possible)
+  let g:LargeFile = 1024 * 1024 * 10
+  augroup LargeFile
+    autocmd BufReadPre * let f=expand("<afile>") | if getfsize(f) > g:LargeFile | set eventignore+=FileType | setlocal noswapfile bufhidden=unload buftype=nowrite undolevels=-1 | else | set eventignore-=FileType | endif
+  augroup END
+endif
+
+" copy current file name (relative/absolute) to system clipboard
+" relative path  (src/foo.txt)
+nnoremap <leader>cf :let @"=expand("%:.") \| echo getreg('"')<CR>
+" absolute path  (/something/src/foo.txt)
+nnoremap <leader>cF :let @"=expand("%:p") \| echo getreg('"')<CR>
+" filename       (foo.txt)
+nnoremap <leader>ct :let @"=expand("%:t") \| echo getreg('"')<CR>
+" directory name (/something/src)
+nnoremap <leader>ch :let @"=expand("%:p:h") \| echo getreg('"')<CR>
+
+" open file in another window
+function! OpenFileInOtherWindow()
+    let cfile = expand("<cfile>")
+    wincmd w
+    execute "edit " . cfile
+endfunction
+
+nnoremap gF :call OpenFileInOtherWindow()<CR>
+vnoremap gF :call OpenFileInOtherWindow()<CR>
+
+" }}}

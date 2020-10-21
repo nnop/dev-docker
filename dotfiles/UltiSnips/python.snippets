@@ -1,0 +1,145 @@
+#! header
+snippet #! "Shebang header for python scripts" b
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+$0
+endsnippet
+
+
+snippet nphead "import np and plt" b
+import numpy as np
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+import cv2
+endsnippet
+
+snippet argparse "ArgumentParser head" b
+from argparse import ArgumentParser
+
+def parse_args():
+	parser = ArgumentParser()
+	args = parser.parse_args()
+	return args
+endsnippet
+
+snippet osp "import os.path" b
+import os.path as osp
+endsnippet
+
+snippet savefig "plt save figure" b
+plt.savefig($1)
+endsnippet
+
+snippet glob "glob" b
+from glob import glob
+endsnippet
+
+snippet time "time" b
+from time import time
+endsnippet
+
+snippet logging "logging" b
+import logging
+
+logging.basicConfig(format='[%(filename)s:%(lineno)d] %(message)s', level=logging.INFO)
+endsnippet
+
+snippet mkdir "make_dir" b
+if not osp.isdir($1):
+	os.makedirs($1)
+endsnippet
+
+snippet addarg "addarg" b
+parser.add_argument('--$1')
+endsnippet
+
+snippet loginfo "loginfo" b
+logging.info('$1'.format($2))$0
+endsnippet
+
+snippet logdebug "logdebug" b
+logging.debug('$1'.format($2))$0
+endsnippet
+
+snippet logwarn "logwarning" b
+logging.warning('$1')
+endsnippet
+
+snippet logerror "logerror" b
+logging.error('$1')
+endsnippet
+
+snippet np "np" b
+import numpy as np
+endsnippet
+
+snippet subplot "subplot" b
+plt.subplot(M, N, $1)
+endsnippet
+
+snippet figure "figure" b
+M, N = 1, 1
+h_fig = plt.figure(figsize=(N*5, M*5), dpi=150, tight_layout=True)
+plt.savefig($1)
+plt.close(h_fig)
+endsnippet
+
+snippet mpi "mpi" b
+from mpi4py import MPI
+
+comm = MPI.COMM_WORLD
+MPI_rank = comm.Get_rank()
+MPI_size = comm.Get_size()
+endsnippet
+
+snippet readlines "readlines" b
+with open($1) as f:
+	lines = f.readlines()
+$0
+endsnippet
+
+snippet writelines "writelines" b
+with open($1, 'w') as f:
+	f.writelines($2)
+$0
+endsnippet
+
+snippet embed "IPython embed" b
+from IPython import embed; embed(colors='linux')
+endsnippet
+
+snippet imread "cv2.imread" b
+im = cv2.imread(${1:im_p})[..., ::-1]
+endsnippet
+
+snippet plot "plt.plot" b
+plt.plot($1)
+endsnippet
+
+snippet pprint "pprint" b
+from pprint import pprint, pformat
+endsnippet
+
+snippet random "np.random.random" w
+np.random.random($1)
+endsnippet
+
+snippet filehead "osp, glob" b
+import os.path as osp
+from glob import glob
+endsnippet
+
+snippet mn "mn" w
+osp.splitext(osp.basename($1))[0]$0
+endsnippet
+
+snippet dot "sys.stdout.write('.')" b
+sys.stdout.write('${1:.}')
+sys.stdout.flush()
+endsnippet
+
+snippet future "__future__" b
+from __future__ import absolute_import , division, print_function
+endsnippet
+

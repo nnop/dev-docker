@@ -1,0 +1,10 @@
+snippet msg "message" b
+message(STATUS "$1=\$\{${1}\}")$0
+endsnippet
+
+snippet blk "block" b
+$1 ($2)
+$3
+end$1()
+endsnippet
+

@@ -1,0 +1,39 @@
+snippet todo "single line todo" b
+// TODO: $1
+endsnippet
+
+snippet usestd "using namespace std" b
+using namespace std;
+endsnippet
+
+snippet using "using" b
+using std::$1;
+endsnippet
+
+snippet loginfo "LOG(INFO)" b
+LOG(INFO) << "$1";
+endsnippet
+
+snippet vec "vector<..." w
+vector<$1> $0
+endsnippet
+
+snippet vv "vector<vector<..." w
+vector<vector<$1>> $0
+endsnippet
+
+snippet begend "begend" w
+${1:v}.begin(), $1.end()
+endsnippet
+
+snippet cfor "for ( : )" 
+for (const auto &$1 : $2)$0
+endsnippet
+
+snippet cauto "const auto &" w
+const auto& 
+endsnippet
+
+snippet ptr "shared_ptr"
+shared_ptr<$1> $0
+endsnippet
