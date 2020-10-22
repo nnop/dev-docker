@@ -46,6 +46,7 @@ RUN --mount=type=cache,sharing=locked,id=aptlib,target=/var/lib/apt \
     silversearcher-ag \
     software-properties-common \
     sudo \
+    tree \
     wget \
     zsh && \
     apt clean && rm -rf /var/lib/apt/lists/*
@@ -88,41 +89,11 @@ RUN --mount=type=tmpfs,target=/tmp \
   make && cp su-exec /sbin && \
   popd
 
-# add user
-RUN useradd -ms /bin/zsh guoqiang && \
-  echo "guoqiang:a" | chpasswd && \
-  echo 'guoqiang ALL=(ALL:ALL) ALL' >> /etc/sudoers
-WORKDIR /home/guoqiang
-ENV HOME /home/guoqiang
-
-# oh-my-zsh
-RUN bash -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" && \
-  git clone https://github.com/zsh-users/zsh-autosuggestions $HOME/.oh-my-zsh/custom/plugins/zsh-autosuggestions && \
-  git clone https://github.com/zsh-users/zsh-syntax-highlighting.git $HOME/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting && \
-  find $HOME/.oh-my-zsh -name .git | xargs rm -rf
-
-# vim
-COPY /dotfiles/vimrc .vimrc
-RUN curl -fLo $HOME/.vim/autoload/plug.vim --create-dirs \
-    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim && \
-    vim +PlugInstall +qall && \
-    find $HOME/.vim/plugged/YouCompleteMe -name 'libclang-*.tar.*' -delete
-    # find $HOME/.vim/plugged -name .git | xargs rm -rf && 
-
-COPY /ycm_extra_conf.py .ycm_extra_conf.py
-COPY /dotfiles/tmux.conf .tmux.conf
-COPY /dotfiles/zshrc .zshrc
-COPY /dotfiles/UltiSnips .vim/UltiSnips
-
 # locales
 ENV LANGUAGE=en_US.UTF-8
 ENV LANG=en_US.UTF-8
 ENV LC_ALL=en_US.UTF-8
 RUN locale-gen en_US.UTF-8 && dpkg-reconfigure locales
-
-# git config
-RUN git config --global user.name "gq" && \
-  git config --global user.email "gq"
 
 RUN mkdir -p $HOME/.pip && \
   echo "[global]" > $HOME/.pip/pip.conf && \
@@ -136,7 +107,3 @@ RUN mkdir -p $HOME/.pip && \
     opencv-python \
     six \
     tqdm
-
-# entrypoint
-COPY entrypoint.sh /bin/entrypoint.sh
-ENTRYPOINT ["/bin/entrypoint.sh"]
