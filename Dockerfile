@@ -26,6 +26,7 @@ RUN --mount=type=cache,sharing=locked,id=aptlib,target=/var/lib/apt \
     global \
     git \
     htop \
+    less \
     libevent-dev \
     liblua5.2-dev \
     libncurses5 \
@@ -95,15 +96,24 @@ ENV LANG=en_US.UTF-8
 ENV LC_ALL=en_US.UTF-8
 RUN locale-gen en_US.UTF-8 && dpkg-reconfigure locales
 
-RUN mkdir -p $HOME/.pip && \
-  echo "[global]" > $HOME/.pip/pip.conf && \
-  echo "http://mirrors.aliyun.com/pypi/simple/" >> $HOME/.pip/pip.conf && \
-  pip3 install -U --no-cache-dir \
+RUN curl -sL https://deb.nodesource.com/setup_15.x | sudo -E bash - && \
+  sudo apt-get install -y nodejs
+
+RUN --mount=type=cache,id=custom-pip,target=/root/.cache/pip \
+  pip3 install \
     cmake \
     ipdb \
-    jupyter \
+    ipympl \
+    jupyterlab \
     matplotlib \
     numpy \
     opencv-python \
+    pandas \
+    qgrid \
+    scipy \
     six \
-    tqdm
+    tqdm && \
+  jupyter nbextension enable --py --sys-prefix widgetsnbextension && \
+  jupyter nbextension enable --py --sys-prefix qgrid && \
+  jupyter labextension install @jupyter-widgets/jupyterlab-manager && \
+  jupyter labextension install qgrid2
