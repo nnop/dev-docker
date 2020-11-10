@@ -109,22 +109,6 @@ killseq() {
   for i in $(seq $1 $2); do kill -9 $i; done
 }
 
-# ownCloud
-alias owndown="wget --http-user=guoqiang1 --http-passwd=0okm@NJI95 --no-check-certificate"
-function ownup() {
-  if [ $# -lt 1 ]; then
-    echo "Usage: $0 src dst"
-    return
-  fi
-  SRC=$1
-  DST=$2
-  if [ -z ${DST##**/} ]; then
-    DST=$DST${SRC##**/}
-  fi
-  echo "up $SRC to $DST"
-  curl -k -X PUT -u guoqiang1:0okm@NJI95 https://cloud.momenta.works/remote.php/dav/files/guoqiang1/$DST --data-binary @"$SRC" --progress-bar
-}
-
 # tmux 
 # alias tmux="tmux -2"
 alias tmls="tmux ls"
