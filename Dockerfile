@@ -28,12 +28,14 @@ RUN --mount=type=cache,sharing=locked,id=aptlib,target=/var/lib/apt \
     htop \
     less \
     libevent-dev \
+    libgl1-mesa-glx \
     liblua5.2-dev \
     libncurses5 \
     libncurses5-dev \
     libperl-dev \
     libreadline-dev \
     libssl1.0.0 \
+    libx11-dev libxtst-dev libxt-dev libsm-dev libxpm-dev \
     locales \
     lsb-release \
     lua5.2 \
@@ -49,8 +51,9 @@ RUN --mount=type=cache,sharing=locked,id=aptlib,target=/var/lib/apt \
     sudo \
     tree \
     wget \
-    zsh && \
-    apt clean && rm -rf /var/lib/apt/lists/*
+    zip unzip \
+    zsh
+    # apt clean && rm -rf /var/lib/apt/lists/*
 
 # python3.7
 RUN add-apt-repository -y ppa:deadsnakes/nightly && \
@@ -65,12 +68,17 @@ RUN curl https://bootstrap.pypa.io/get-pip.py | python3
 
 # vim & tmux
 RUN --mount=type=tmpfs,target=/tmp \
-  # vim 8.2 \
+  # aws \
   pushd /tmp && \
+  curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o /tmp/awscliv2.zip && \
+  unzip awscliv2.zip && ./aws/install && \
+  # vim 8.2 \
   git clone --depth 1 --branch v8.2.1862 https://github.com/vim/vim.git && \
   pushd vim && \
   ./configure \
     --prefix=/usr/local \
+    --enable-gui=auto \
+    --with-x \
     --with-features=huge \
     --enable-multibyte \
     --enable-python3interp=yes \
@@ -117,3 +125,5 @@ RUN --mount=type=cache,id=custom-pip,target=/root/.cache/pip \
   jupyter nbextension enable --py --sys-prefix qgrid && \
   jupyter labextension install @jupyter-widgets/jupyterlab-manager && \
   jupyter labextension install qgrid2
+
+RUN npm install --global http-server
