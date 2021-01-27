@@ -1,5 +1,6 @@
 # syntax=docker/dockerfile:experimental
-FROM ubuntu:16.04
+# FROM ubuntu:16.04
+FROM nvidia/cuda:11.2.0-base-ubuntu16.04
 
 ARG DEBIAN_FRONTEND=noninteractive
 ENV TERM=xterm-256color
@@ -7,12 +8,11 @@ ENV TERM=xterm-256color
 RUN echo "dash dash/sh boolean false" | debconf-set-selections && \
   dpkg-reconfigure dash
 
-RUN sed -i 's/archive.ubuntu.com/mirrors.aliyun.com/g' /etc/apt/sources.list \
-  && apt clean
+RUN sed -i 's/archive.ubuntu.com/mirrors.aliyun.com/g' /etc/apt/sources.list
 
-RUN --mount=type=cache,sharing=locked,id=aptlib,target=/var/lib/apt \
-    --mount=type=cache,sharing=locked,id=aptcache,target=/var/cache/apt \
-  apt update && apt install -y --no-install-recommends \
+# RUN --mount=type=cache,sharing=locked,id=aptlib,target=/var/lib/apt \
+#     --mount=type=cache,sharing=locked,id=aptcache,target=/var/cache/apt \
+RUN apt update && apt install -y --no-install-recommends \
     autoconf \
     automake \
     autotools-dev \
@@ -22,16 +22,21 @@ RUN --mount=type=cache,sharing=locked,id=aptlib,target=/var/lib/apt \
     curl \
     docker.io \
     flex \
+    ffmpeg \
     gdb \
     global \
     git \
     htop \
+    iputils-ping \
     less \
+    libboost-dev \
+    libeigen3-dev \
     libevent-dev \
     libgl1-mesa-glx \
     liblua5.2-dev \
     libncurses5 \
     libncurses5-dev \
+    libopencv-dev \
     libperl-dev \
     libreadline-dev \
     libssl1.0.0 \
@@ -41,11 +46,14 @@ RUN --mount=type=cache,sharing=locked,id=aptlib,target=/var/lib/apt \
     lua5.2 \
     m4 \
     man \
+    mpich \
     nasm \
+    net-tools \
     openssh-server \
     openssl \
     pkg-config \
     psutils \
+    rsync \
     silversearcher-ag \
     software-properties-common \
     sudo \
@@ -67,7 +75,8 @@ RUN add-apt-repository -y ppa:deadsnakes/nightly && \
 RUN curl https://bootstrap.pypa.io/get-pip.py | python3
 
 # vim & tmux
-RUN --mount=type=tmpfs,target=/tmp \
+# RUN --mount=type=tmpfs,target=/tmp \
+RUN \
   # aws \
   pushd /tmp && \
   curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o /tmp/awscliv2.zip && \
@@ -107,23 +116,29 @@ RUN locale-gen en_US.UTF-8 && dpkg-reconfigure locales
 RUN curl -sL https://deb.nodesource.com/setup_15.x | sudo -E bash - && \
   sudo apt-get install -y nodejs
 
-RUN --mount=type=cache,id=custom-pip,target=/root/.cache/pip \
-  pip3 install \
+# RUN --mount=type=cache,id=custom-pip,target=/root/.cache/pip \
+RUN pip3 install \
     cmake \
     ipdb \
     ipympl \
-    jupyterlab \
+    jupyterlab==2 \
     matplotlib \
     numpy \
     opencv-python \
     pandas \
-    qgrid \
     scipy \
     six \
-    tqdm && \
+    tqdm
+
+RUN pip3 install \
+  plotly==4.14.3 \
+  qgrid && \
   jupyter nbextension enable --py --sys-prefix widgetsnbextension && \
   jupyter nbextension enable --py --sys-prefix qgrid && \
-  jupyter labextension install @jupyter-widgets/jupyterlab-manager && \
-  jupyter labextension install qgrid2
+  jupyter labextension install qgrid2 --no-build && \
+  jupyter labextension install jupyterlab-plotly@4.14.3 --no-build && \
+  jupyter labextension install @jupyter-widgets/jupyterlab-manager@2.0 --no-build && \
+  jupyter labextension install plotlywidget@4.14.3 --no-build && \
+  jupyter lab build
 
 RUN npm install --global http-server
