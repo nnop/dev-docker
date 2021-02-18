@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:experimental
 # FROM ubuntu:16.04
-FROM nvidia/cuda:11.2.0-base-ubuntu16.04
+FROM nvidia/cuda:11.2.0-devel-ubuntu16.04
 
 ARG DEBIAN_FRONTEND=noninteractive
 ENV TERM=xterm-256color
@@ -30,6 +30,7 @@ RUN apt update && apt install -y --no-install-recommends \
     iputils-ping \
     less \
     libboost-dev \
+    libcurl4-openssl-dev \
     libeigen3-dev \
     libevent-dev \
     libgl1-mesa-glx \
@@ -121,7 +122,7 @@ RUN pip3 install \
     cmake \
     ipdb \
     ipympl \
-    jupyterlab==2 \
+    jupyterlab==2.2.9 \
     matplotlib \
     numpy \
     opencv-python \
@@ -135,10 +136,10 @@ RUN pip3 install \
   qgrid && \
   jupyter nbextension enable --py --sys-prefix widgetsnbextension && \
   jupyter nbextension enable --py --sys-prefix qgrid && \
-  jupyter labextension install qgrid2 --no-build && \
-  jupyter labextension install jupyterlab-plotly@4.14.3 --no-build && \
-  jupyter labextension install @jupyter-widgets/jupyterlab-manager@2.0 --no-build && \
-  jupyter labextension install plotlywidget@4.14.3 --no-build && \
-  jupyter lab build
+  jupyter labextension install @jupyter-widgets/jupyterlab-manager@2.0 && \
+  jupyter labextension install jupyter-matplotlib && \
+  jupyter labextension install qgrid2 && \
+  jupyter labextension install jupyterlab-plotly@4.14.3 && \
+  jupyter labextension install plotlywidget@4.14.3
 
 RUN npm install --global http-server
