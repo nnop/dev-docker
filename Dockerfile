@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:experimental
 # FROM ubuntu:16.04
-FROM nvidia/cuda:11.2.0-devel-ubuntu16.04
+FROM nvidia/cuda:10.2-devel-ubuntu18.04
 
 ARG DEBIAN_FRONTEND=noninteractive
 ENV TERM=xterm-256color
@@ -68,8 +68,6 @@ RUN apt update && apt install -y --no-install-recommends \
 RUN add-apt-repository -y ppa:deadsnakes/nightly && \
   apt update && \
   apt install -y python3.7 python3.7-dev python3.7-venv python3.7-distutils && \
-  apt clean && rm -rf /var/lib/apt/lists/* && \
-  update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.5 35 && \
   update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.7 37
 
 # pip
@@ -97,16 +95,16 @@ RUN \
     --enable-luainterp=yes \
     --enable-cscope && make -j$(nproc) install && \
   popd && \
-  # tmux 2.6 \
-  git clone --depth 1 --branch 2.6 https://github.com/tmux/tmux.git && \
-  pushd tmux && \
+  # tmux \
+  git clone https://github.com/tmux/tmux.git && \
+  pushd tmux && git checkout 3.2 && \
   bash ./autogen.sh && ./configure --prefix=/usr/local && make -j$(nproc) install &&  \
-  popd && \
-  # su-exec \
-  git clone https://github.com/ncopa/su-exec.git && \
-  pushd su-exec && \
-  make && cp su-exec /sbin && \
   popd
+  # # su-exec \
+  # git clone https://github.com/ncopa/su-exec.git && \
+  # pushd su-exec && \
+  # make && cp su-exec /sbin && \
+  # popd
 
 # locales
 ENV LANGUAGE=en_US.UTF-8
